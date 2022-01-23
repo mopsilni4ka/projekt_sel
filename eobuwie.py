@@ -3,7 +3,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import unittest
-import time
 
 
 user_email = "kseniakireeva+eobuwie@gmail.com"
@@ -24,8 +23,6 @@ class eobuwieTests(unittest.TestCase):
         # Maksymalizacja okna
         self.driver.maximize_window()
 
-
-
     def tearDown(self):
         # "Sprzątanie" po teście
         # Zamknięcie przeglądarki
@@ -35,6 +32,7 @@ class eobuwieTests(unittest.TestCase):
         # Test
         driver = self.driver
 
+        # Akceptacja cookies
         driver.find_element_by_xpath('//button[@data-testid="permission-popup-accept"]').click()
 
         # Explicit Wait for Login button
@@ -64,12 +62,15 @@ class eobuwieTests(unittest.TestCase):
         driver = self.driver
         wait = WebDriverWait(driver, 10)
 
+        # Znajdz forme do wyszukiwania
         search_form = driver.find_element(By.XPATH, search_form_loc)
 
+        # Wpisz co chcesz wyszukac i nacisnij przycisk wyszukiwania
         search_form.send_keys(search_form_item1)
         start_search = driver.find_element(By.XPATH, search_button)
         start_search.click()
 
+        # Zaczekaj az element bedzie widoczny na stronie. Nastepnie kliknij w produkt i wybierz rozmiar butow
         wait.until(EC.visibility_of_element_located((By.XPATH, "//*[@class='products-list__link']")))
         driver.find_element(By.XPATH, "//*[@class='products-list__link']").click()
         wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'e-size-picker__select')))
@@ -82,18 +83,21 @@ class eobuwieTests(unittest.TestCase):
             By.XPATH, "//*[@class='e-size-picker-option__label' and normalize-space()='38']")
         size_select.click()
 
+        # Dodaj buty do koszyka
         add_to_cart = driver.find_element(By.XPATH, '//button[@data-testid="product-add-to-cart-button"]')
         add_to_cart.click()
 
+        # Zaczekaj na element i kliknij w Kontynuuj zakupy
         wait.until(EC.visibility_of_element_located(
             (By.XPATH, "//*[@type='button' and normalize-space()='Kontynuuj zakupy']")))
         continue_purchasing = driver.find_element(By.XPATH,
                                                   "//*[@type='button' and normalize-space()='Kontynuuj zakupy']")
         continue_purchasing.click()
 
+        # Wejdz do koszyka
         driver.find_element(By.CLASS_NAME, 'e-header-cart-button__text').click()
 
-        # Check if items in the cart
+        # Sprawdz czy buty w koszyku sa te same co wyszukiwalismy
 
         wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'products')))
 
